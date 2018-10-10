@@ -1,0 +1,61 @@
+<% extend 'layout' %>
+
+<%= "This is multer sample"  %>
+
+<div id="drag-area" style="background-color: lightgray; text-align: center;">
+  <p>Drop an upload file.</p>
+  <p>or</p>
+  <div class="btn-group">
+    <input type="file" name="upFile" style="display: none;">
+    <button id="btn">Choose an upload file.</button>
+  </div>
+</div>
+
+<% block 'footer-info' : %>
+  <div class="right">page: upload</div>
+  <script>
+
+$(function(){
+    $('#drag-area').bind('drop', function(e){
+        e.preventDefault();
+        var files = e.originalEvent.dataTransfer.files;
+        upload(files);
+    }).bind('dragenter', function(){
+        return false;
+    }).bind('dragover', function(){
+        return false;
+    });
+
+    $('#btn').click(function() {
+        $('input[type="file"]').click();
+    });
+ 
+    $('input[type="file"]').change(function(){
+        var files = this.files;
+        upload(files);
+    });
+});
+
+function upload(files) {
+
+    if (files == null || files.length == 0) {
+        return;  
+    }
+
+    var frm = new FormData();
+    frm.append("upFile", files[0]);
+
+    $.ajax({
+        url: 'http://' + location.host + '/up',
+        type: 'post',
+        data: frm,
+        processData: false,
+        contentType: false,
+        success: function(data) {
+            alert('The file has uploaded.');
+        }
+    });
+}
+
+  </script>
+<% end %>
